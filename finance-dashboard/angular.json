@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "fincance-dashboard": {
+    "finance-dashboard": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -32,7 +32,15 @@
             ],
             "styles": [
               "src/styles.scss"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
@@ -62,10 +70,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "fincance-dashboard:build:production"
+              "buildTarget": "finance-dashboard:build:production"
             },
             "development": {
-              "buildTarget": "fincance-dashboard:build:development"
+              "buildTarget": "finance-dashboard:build:development"
             }
           },
           "defaultConfiguration": "development"
