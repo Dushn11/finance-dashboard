@@ -5,6 +5,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+	</repositories>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -45,7 +52,6 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- ✅ JWT (ЭТО ТЕБЕ НУЖНО) -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
