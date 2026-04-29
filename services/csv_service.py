@@ -1,7 +1,7 @@
 import csv
 import io
 
-def parse_csv(file="data/income.csv"):
+def parse_csv(file):
     if not file:
         return []
     try:
