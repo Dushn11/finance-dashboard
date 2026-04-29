@@ -1,7 +1,6 @@
 from flask import Blueprint,request,jsonify
 from services.csv_service import parse_csv
-from services.bank_service import fetch_transactions
-from services.normalization_service import normalize_transactions
+from services.normalization_service import normalize_data
 
 import_bp = Blueprint("import",__name__)
 
@@ -11,14 +10,7 @@ def import_csv():
     if not file:
         return jsonify({"error":"Brak pliku"}), 400
     transactions = parse_csv(file)
-    normalized = normalize_transactions(transactions)
-    return jsonify(normalized), 200
-
-@import_bp.route("/bank", methods=["POST"])
-def import_bank():
-    data = request.json
-    transactions =fetch_transactions(data)
-    normalized = normalize_transactions(transactions)
+    normalized = normalize_data(transactions)
     return jsonify(normalized), 200
 
 @import_bp.route("/health",methods=["GET"])
