@@ -22,6 +22,10 @@ def import_csv():
         "spring_response": spring_response
     }), 200
 
+@import_bp.route('/pdf',methods=["POST"])
+def import_pdf():
+    file = request.files.get("file")
+
 @import_bp.route("/health",methods=["GET"])
 def health():
     return {"status":"ok"}
