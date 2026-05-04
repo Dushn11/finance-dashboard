@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+// ── Переменные ──────────────────────────
+$color-bg: #EEF4FB;
+$color-surface: #FFFFFF;
+$color-primary: #2563EB;
+$color-text: #1a2540;
+$color-text-muted: #64748b;
+$color-border: #d4e2f0;
+$shadow-card: 0 2px 12px rgba(37, 99, 235, 0.06);
+$radius-card: 16px;
+$radius-btn: 8px;
+
+// ── Миксины ─────────────────────────────
+@mixin card {
+  background: $color-surface;
+  border-radius: $radius-card;
+  box-shadow: $shadow-card;
+  border: 1px solid $color-border;
+  padding: 20px;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-row($gap: 12px) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+}
+
+// ── Глобальные базовые стили ─────────────
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: $color-bg;
+  color: $color-text;
+  font-family: 'Inter', sans-serif;
+}

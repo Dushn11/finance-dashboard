@@ -1,22 +1,14 @@
 import { Routes } from '@angular/router';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Settings } from './pages/settings/settings';
-import { Import } from './pages/import/import';
+import { LayoutComponent } from './layout/layout.component/layout.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        component: Dashboard,
-        title: 'Dashboard'
-    },
-    {
-        path: 'settings',
-        component: Settings,
-        title: 'Settings'
-    },
-    {
-        path: 'import',
-        component: Import,
-        title: 'Import'
-    }
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      { path: '', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
+      { path: 'settings', loadComponent: () => import('./pages/settings/settings').then(m => m.Settings) },
+      { path: 'import', loadComponent: () => import('./pages/import/import').then(m => m.Import) },
+    ]
+  }
 ];

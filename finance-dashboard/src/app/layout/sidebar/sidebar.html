@@ -1,1 +1,20 @@
-<p>sidebar works!</p>
+<aside class="sidebar">
+<div class="logo">
+    <div class="logo-icon"></div>
+    <span>Title</span>
+</div>
+<nav class="nav">
+    <a class="nav-item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+    </a>
+    <a class="nav-item" routerLink="/import" routerLinkActive="active">
+        <span class="nav-icon">📥</span>
+        <span>Import</span>
+    </a>
+    <a class="nav-item" routerLink="/settings" routerLinkActive="active" >
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+    </a>
+</nav>
+</aside>
