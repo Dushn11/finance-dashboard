@@ -1,0 +1,15 @@
+@use '../../../styles' as *;
+
+.layout {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  height: 100vh;
+  padding: 24px;
+  background: var(--color-bg);
+  overflow-y: auto;
+}

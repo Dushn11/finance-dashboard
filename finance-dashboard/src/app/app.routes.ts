@@ -9,6 +9,7 @@ export const routes: Routes = [
       { path: '', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings').then(m => m.Settings) },
       { path: 'import', loadComponent: () => import('./pages/import/import').then(m => m.Import) },
+      { path: 'login', loadComponent: () => import('./pages/login/login').then(m => m.Login) },
     ]
   }
 ];
