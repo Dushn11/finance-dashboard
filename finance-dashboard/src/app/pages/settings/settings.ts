@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { DOCUMENT } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
@@ -7,10 +7,23 @@ import { DOCUMENT } from '@angular/core';
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })
-export class Settings {
+export class Settings implements OnInit {
   private document = inject(DOCUMENT);
+  private platformId = inject(PLATFORM_ID);
+  private body = this.document.body;
+  isDark: boolean = false;
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isDark = localStorage.getItem('theme') === 'dark';
+    }
+  }
+
   switchTheme() {
-    this.document.body.classList.toggle('dark'); 
-    console.log(this.document.body.classList);
+    if (isPlatformBrowser(this.platformId)) {
+      this.isDark = !this.isDark;
+      this.body.classList.toggle('dark');
+      localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+    }
   }
 }
