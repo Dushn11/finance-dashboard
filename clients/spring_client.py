@@ -1,10 +1,10 @@
-from flask import request
+import requests
 
 SPRING_URL="http://localhost:8080/api/transactions"
 
 def send_to_spring(normalized_data):
     try:
-        response=request.post(
+        response=requests.post(
             SPRING_URL,
             json=normalized_data,
             headers={"Content-Type":"application/json"}
