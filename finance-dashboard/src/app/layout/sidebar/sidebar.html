@@ -1,0 +1,33 @@
+<aside class="sidebar">
+    <div class="logo">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined">
+            <path d="M12 16v5" />
+            <path d="M16 14v7" />
+            <path d="M20 10v11" />
+            <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15" />
+            <path d="M4 18v3" />
+            <path d="M8 14v7" />
+        </svg>
+        <span>FinTrack</span>
+    </div>
+    <nav class="nav">
+        <a class="nav-item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="nav-item" routerLink="/import" routerLinkActive="active">
+            <span class="nav-icon">📥</span>
+            <span>Import</span>
+        </a>
+        <a class="nav-item" routerLink="/settings" routerLinkActive="active">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+        </a>
+    </nav>
+    <a class="nav-item nav-login" routerLink="/login" routerLinkActive="active">
+        <span class="nav-icon">🚪</span>
+        <span>Login</span>
+    </a>
+</aside>

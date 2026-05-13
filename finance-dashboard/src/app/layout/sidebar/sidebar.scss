@@ -1,0 +1,62 @@
+@use '../../../styles' as *;
+
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+}
+
+.logo {
+  @include flex-row(10px);
+  padding: 0 20px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+
+  &-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--color-primary);
+  }
+}
+
+.nav-login {
+  margin-top: auto;
+  margin-bottom: 12px;
+  margin-left: 12px;
+  margin-right: 12px;
+  border-radius: $radius-btn;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 12px;
+
+  &-item {
+    @include flex-row(10px);
+    padding: 10px 12px;
+    border-radius: $radius-btn;
+    text-decoration: none;
+    font-size: 14px;
+    color: var(--color-text-muted);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    &.active {
+      background: var(--active-bg);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+  }
+}
