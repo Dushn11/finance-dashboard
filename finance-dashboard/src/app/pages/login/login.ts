@@ -17,7 +17,7 @@ export class Login {
   email: string = '';
   confirmPassword: string = '';
   onLogin() {
-    this.authService.login(this.username, this.password).subscribe(
+    this.authService.login(this.email, this.password).subscribe(
       {
         next: (response) => { this.router.navigate(['/dashboard']) },
         error: (error) => { console.error('Login failed', error) }
@@ -29,7 +29,7 @@ export class Login {
       console.error('Passwords do not match');
       return;
     }
-    this.authService.register(this.username, this.password).subscribe(
+    this.authService.register(this.email, this.password, this.username).subscribe(
       {
         next: (response) => { this.router.navigate(['/dashboard']) },
         error: (error) => { console.error('Registration failed', error) }

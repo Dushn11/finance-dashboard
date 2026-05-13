@@ -16,8 +16,8 @@ export class AuthService {
     private router: Router,
   ) { }
 
-  login(username: string, password: string) {
-    return this.http.post<{ token: string }>('/api/auth/login', { username, password }).pipe(
+  login(email: string, password: string) {
+    return this.http.post<{ token: string }>('http://localhost:8080/api/auth/login', { email, password }).pipe(
       tap((response: { token: string }) => {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('token', response.token)
@@ -25,8 +25,8 @@ export class AuthService {
       })
     );
   }
-  register(username: string, password: string) {
-    return this.http.post<{ token: string }>('/api/auth/register', { username, password }).pipe(
+  register(email: string, password: string, username: string) {
+    return this.http.post<{ token: string }>('http://localhost:8080/api/auth/register', { email, password, username }).pipe(
       tap((response: { token: string }) => {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('token', response.token)

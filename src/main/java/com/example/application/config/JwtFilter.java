@@ -32,6 +32,18 @@ public class JwtFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
+        // Пропускаем публичные эндпоинты
+        String path = request.getRequestURI();
+        System.out.println("=== JWT FILTER ===");
+        System.out.println("Path: " + path);
+        System.out.println("Method: " + request.getMethod());
+
+        if (path.startsWith("/api/auth/")) {
+            System.out.println("Skipping JWT check for auth endpoint");
+            chain.doFilter(request, response);
+            return;
+        }
+
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
