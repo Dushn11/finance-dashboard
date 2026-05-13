@@ -1,5 +1,6 @@
 package com.example.application.service;
 
+import com.example.application.dto.UserDTO;
 import com.example.application.model.User;
 import com.example.application.repository.UserRepository;
 import com.example.application.util.JwtUtil;
@@ -26,13 +27,16 @@ public class UserService implements UserDetailsService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String register(String email, String password) {
+    public String register(String email, String password, String username) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email уже занят");
         }
         User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
+        if (username != null && !username.isEmpty()) {
+            user.setUsername(username);
+        }
         userRepository.save(user);
         return jwtUtil.generateToken(email);
     }
@@ -58,5 +62,11 @@ public class UserService implements UserDetailsService {
                 .password(user.getPassword())
                 .roles(user.getRole())
                 .build();
+    }
+
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        return new UserDTO(user.getId(), user.getEmail(), user.getUsername(), user.getRole());
     }
 }
