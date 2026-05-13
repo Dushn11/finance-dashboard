@@ -11,12 +11,11 @@ import { Router } from '@angular/router';
   styleUrl: './login.scss',
 })
 export class Login {
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(public authService: AuthService, private router: Router) { }
   username: string = '';
   password: string = '';
   email: string = '';
   confirmPassword: string = '';
-  showRegister: boolean = true;
   onLogin() {
     this.authService.login(this.username, this.password).subscribe(
       {

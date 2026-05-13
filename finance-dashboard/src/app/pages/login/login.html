@@ -1,5 +1,5 @@
 <div class="login-wrapper">
-  @if (!showRegister) {
+  @if (authService.isAuthenticated()) {
     <div class="login-card">
       <h2 class="login-title">Login</h2>
       <form>
@@ -15,7 +15,7 @@
       </form>
     </div>
   }
-  @if (showRegister) {
+  @if (!authService.isAuthenticated()) {
     <div class="login-card">
       <h2 class="login-title">Register</h2>
       <form>
