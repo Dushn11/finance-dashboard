@@ -4,18 +4,14 @@ def normalize_data(rows):
     for r in rows:
         try:
             normalized.append({
-                "email": r.get("Email",""),
-                "password": r.get("Password",""),
-                "role":r.get("Role","USER"),
                 "amount": float(r.get("Amount",0.0)),
-                "type":r.get("type",None),
-                "age": int(r.get("Age",0)),
-                "education":r.get("Education",""),
-                "gender":r.get("Gender","")
+                "description": r.get("Description",""),
+                "type":r.get("type","INCOME")
             })
                 
             
-        except Exception:
+        except Exception as e:
+            print("Normalization error", e)
             continue
 
     return normalized

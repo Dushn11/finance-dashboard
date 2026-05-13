@@ -1,6 +1,6 @@
 from flask import request
 
-SPRING_URL="http://localhost:8080/api/import"
+SPRING_URL="http://localhost:8080/api/transactions"
 
 def send_to_spring(normalized_data):
     try:
