@@ -2,9 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service.js';
 
-export const authGuard: CanActivateFn = ()=>{
+export const AuthGuard: CanActivateFn = ()=>{
   // TODO: Remove this bypass before production
-  return true; // Temporary: allow all routes during development
 
   const authService = inject(AuthService);
   const router = inject(Router);

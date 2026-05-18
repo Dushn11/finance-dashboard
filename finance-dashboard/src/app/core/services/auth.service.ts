@@ -43,7 +43,7 @@ export class AuthService {
   getToken(): string | null {
     if (isPlatformBrowser(this.platformId))
   {
-      return /*localStorage.getItem('token')*/ 'token';
+      return localStorage.getItem('token');
     }
     return null;
   }
