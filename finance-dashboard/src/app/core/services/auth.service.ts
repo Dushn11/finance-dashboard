@@ -17,7 +17,7 @@ export class AuthService {
   ) { }
 
   login(username: string, password: string) {
-    return this.http.post<{ token: string }>('/api/auth/login', { username, password }).pipe(
+    return this.http.post<{ token: string }>('http://localhost:8080/api/auth/login', { username, password }).pipe(
       tap((response: { token: string }) => {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('token', response.token)
@@ -26,7 +26,7 @@ export class AuthService {
     );
   }
   register(username: string, password: string) {
-    return this.http.post<{ token: string }>('/api/auth/register', { username, password }).pipe(
+    return this.http.post<{ token: string }>('http://localhost:8080/api/auth/register', { username, password }).pipe(
       tap((response: { token: string }) => {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('token', response.token)
