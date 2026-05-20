@@ -25,7 +25,7 @@ export class AuthService {
       })
     );
   }
-  register(username: string, password: string) {
+  register(username: string, password: string, email: string) {
     return this.http.post<{ token: string }>('http://localhost:8080/api/auth/register', { username, password }).pipe(
       tap((response: { token: string }) => {
         if (isPlatformBrowser(this.platformId)) {
