@@ -31,7 +31,7 @@ public class CsvImportService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    @Value("${python.service.url:http://localhost:5000}")
+    @Value("${python.service.url:http://100.92.130.10}")
     private String pythonServiceUrl;
 
     public CsvImportService(JwtUtil jwtUtil,
