@@ -20,11 +20,23 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest req) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody String rawJson) {
         System.out.println("=== REGISTER REQUEST RECEIVED ===");
-        System.out.println("Email: " + req.getEmail());
-        System.out.println("Username: " + req.getUsername());
-        System.out.println("Password: " + (req.getPassword() != null ? "***" : "null"));
+        System.out.println("Raw JSON: " + rawJson);
+
+        // Parse manually to see what's coming
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        RegisterRequest req;
+        try {
+            req = mapper.readValue(rawJson, RegisterRequest.class);
+            System.out.println("Parsed - Email: " + req.getEmail());
+            System.out.println("Parsed - Username: " + req.getUsername());
+            System.out.println("Parsed - Password: " + (req.getPassword() != null ? "***" : "null"));
+        } catch (Exception e) {
+            System.out.println("Parse error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid JSON"));
+        }
+
         String token = userService.register(req.getEmail(), req.getPassword(), req.getUsername());
         return ResponseEntity.ok(Map.of("token", token));
     }
