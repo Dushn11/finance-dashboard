@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../core/services/auth.service';
 import { RouterLink, RouterLinkActive } from "@angular/router";
 
 @Component({
@@ -8,4 +9,6 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })
-export class Sidebar {}
+export class Sidebar {
+  constructor(public authService: AuthService) {}
+}

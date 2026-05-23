@@ -1,16 +1,53 @@
 <div class="login-wrapper">
-  <div class="login-card">
-    <h2 class="login-title">Login</h2>
-    <form>
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input name="username" type="text" id="username" [(ngModel)]="username" placeholder="Enter your username...">
+  @if (showLogin) {
+    <div class="login-card">
+      <h2 class="login-title">Login</h2>
+      <form>
+        <div class="form-group">
+          <label for="loginEmail">E-Mail</label>
+          <input name="loginEmail" type="email" id="loginEmail" [(ngModel)]="loginEmail" placeholder="Enter your e-mail...">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input name="loginPassword" type="password" id="loginPassword" [(ngModel)]="loginPassword" placeholder="Enter your password...">
+        </div>
+        @if (errorMessage) {
+          <div class="error-message">
+            {{ errorMessage }}
+          </div>
+        }
+        <button class="btn-login" type="submit" (click)="onLogin()">Login</button>
+      </form>
+    </div>
+  }
+  @if (!showLogin) {
+    <div class="login-card">
+      <h2 class="login-title">Register</h2>
+      <form>
+        <div class="form-group">
+          <label for="registerUsername">Username</label>
+        <input name="registerUsername" type="text" id="registerUsername" [(ngModel)]="registerUsername" placeholder="Enter your username...">
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input name="password" type="password" id="password" [(ngModel)]="password" placeholder="Enter your password...">
+        <label for="registerEmail">E-Mail</label>
+        <input name="registerEmail" type="email" id="registerEmail" [(ngModel)]="registerEmail" placeholder="Enter your e-mail...">
       </div>
-      <button class="btn-login" type="submit" (click)="onLogin()">Login</button>
+      <div class="form-group">
+        <label for="registerPassword">Password</label>
+        <input name="registerPassword" type="password" id="registerPassword" [(ngModel)]="registerPassword" placeholder="Enter your password...">
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input name="confirmPassword" type="password" id="confirmPassword" [(ngModel)]="confirmPassword" placeholder="Confirm your password...">
+      </div>
+      @if (errorMessage) {
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+      }
+      <button class="btn-login" type="submit" (click)="onRegister()">Register</button>
     </form>
   </div>
+}
+<button class="btn-switch" (click)="switch()">{{ showLogin ? 'Sign Up' : 'Sign In' }}</button>
 </div>

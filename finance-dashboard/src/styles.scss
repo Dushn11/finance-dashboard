@@ -23,6 +23,23 @@ $radius-btn: 8px;
   gap: $gap;
 }
 
+@mixin btn-secondary {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: $radius-btn;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--color-primary);
+    color: white;
+  }
+}
+
 // ── Глобальные базовые стили ─────────────
 * {
   box-sizing: border-box;

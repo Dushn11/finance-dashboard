@@ -60,3 +60,23 @@
     }
   }
 }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.user-info {
+  padding: 12px;
+  background: var(--color-bg);
+  border-radius: $radius-btn;
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+}
