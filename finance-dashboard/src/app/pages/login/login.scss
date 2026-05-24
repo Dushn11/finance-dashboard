@@ -55,7 +55,39 @@
     &::placeholder {
       color: var(--color-text-muted);
     }
+
+    // Стили валидации
+    &.invalid {
+      @include input-invalid;
+    }
+
+    &.valid {
+      @include input-valid;
+    }
   }
+}
+
+// ── Сообщения валидации ─────────────────
+.field-error {
+  @include field-error;
+}
+
+.success-message {
+  @include field-success;
+}
+
+.checking-status {
+  @include field-checking;
+}
+
+.error-message {
+  background: var(--color-error-shadow);
+  color: var(--color-error);
+  padding: 10px 14px;
+  border-radius: $radius-btn;
+  font-size: 14px;
+  margin-bottom: 12px;
+  border-left: 3px solid var(--color-error);
 }
 
 .btn-login {
@@ -71,8 +103,13 @@
   cursor: pointer;
   transition: opacity 0.15s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 

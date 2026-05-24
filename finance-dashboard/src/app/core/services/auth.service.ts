@@ -76,4 +76,16 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
+
+  checkUsernameAvailability(username: string) {
+    return this.http.get<{ available: boolean }>(
+      `http://100.92.130.10/api/auth/search?username=${username}`
+    );
+  }
+
+  checkEmailAvailability(email: string) {
+    return this.http.get<{ available: boolean }>(
+      `http://100.92.130.10/api/auth/search?email=${email}`
+    );
+  }
 }
