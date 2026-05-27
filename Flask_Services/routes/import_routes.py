@@ -15,11 +15,9 @@ def import_csv():
     transactions = parse_csv(file)
     normalized = normalize_data(transactions)
 
-    spring_response = send_to_spring(normalized)
-
     return jsonify({
-        "flask_processed": len(normalized),
-        "spring_response": spring_response
+        "transactions": normalized,
+        "count": len(normalized)
     }), 200
 
 @import_bp.route("/health",methods=["GET"])

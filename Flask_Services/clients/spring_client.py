@@ -1,6 +1,6 @@
 import requests
 
-SPRING_URL="http://localhost:8080/api/transactions"
+SPRING_URL="http://100.92.130.10/api/transactions"
 
 def send_to_spring(normalized_data):
     try:
