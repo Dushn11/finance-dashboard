@@ -1,2 +1,28 @@
-<input type="file" accept=".txt, .csv" (change)="onFileSelect($event)" />
-<button (click)="onImport()">Upload</button>
+<div class="wrapper">
+    <h1>Import Data</h1>
+    <div class="fileSelect">
+        <p>Select a file to upload:</p>
+        <input type="file" accept=".txt, .csv" (change)="onFileSelect($event)" />
+    </div>
+    <div *ngIf="selectedFile" class="importSettings">
+        <form [formGroup]="importForm">
+            <div>
+                <p>Enter new tab name (optional):</p>
+                <input type="text" formControlName="tabName" placeholder="Tab name" />
+            </div>
+            <div>
+                <input type="checkbox" id="hasHeader" formControlName="hasHeader" />
+                <label for="hasHeader">First row contains headers</label>
+            </div>
+            <div>
+                <p>Select column separator:</p>
+                <select formControlName="columnSeparator">
+                    <option value=",">,</option>
+                    <option value=";">;</option>
+                    <option value="\t">\t</option>
+                </select>
+            </div>
+        </form>
+        <button (click)="onImport()">Upload</button>
+    </div>
+</div>

@@ -26,8 +26,21 @@
             <span>Settings</span>
         </a>
     </nav>
-    <a class="nav-item nav-login" routerLink="/login" routerLinkActive="active">
-        <span class="nav-icon">🚪</span>
-        <span>Login</span>
-    </a>
+    <div class="sidebar-footer">
+        @if(!authService.currentUser()) {
+            <a class="nav-item" routerLink="/login" routerLinkActive="active">
+                <span class="nav-icon">🚪</span>
+                <span>Login</span>
+            </a>
+        }
+        @else {
+            <div class="user-info">
+                <span class="user-name">{{ authService.currentUser()?.username }}</span>
+            </div>
+            <a class="nav-item" (click)="authService.logout()">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        }
+    </div>
 </aside>

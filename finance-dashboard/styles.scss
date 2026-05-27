@@ -40,49 +40,6 @@ $radius-btn: 8px;
   }
 }
 
-// ── Миксины для валидации форм ───────────
-@mixin validation-message {
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-  line-height: 1.4;
-
-  span {
-    display: block;
-    margin-top: 0.25rem;
-  }
-}
-
-@mixin field-error {
-  @include validation-message;
-  color: var(--color-error);
-}
-
-@mixin field-success {
-  @include validation-message;
-  color: var(--color-success);
-}
-
-@mixin field-checking {
-  @include validation-message;
-  color: var(--color-text-muted);
-}
-
-@mixin input-invalid {
-  border-color: var(--color-error) !important;
-
-  &:focus {
-    box-shadow: 0 0 0 0.2rem var(--color-error-shadow);
-  }
-}
-
-@mixin input-valid {
-  border-color: var(--color-success) !important;
-
-  &:focus {
-    box-shadow: 0 0 0 0.2rem var(--color-success-shadow);
-  }
-}
-
 // ── Глобальные базовые стили ─────────────
 * {
   box-sizing: border-box;
@@ -100,12 +57,6 @@ body {
   --shadow-card: 0 2px 12px rgba(37, 99, 235, 0.06);
   --active-bg: #DBEAFE;
 
-  // Цвета для валидации
-  --color-error: #dc3545;
-  --color-success: #28a745;
-  --color-error-shadow: rgba(220, 53, 69, 0.25);
-  --color-success-shadow: rgba(40, 167, 69, 0.25);
-
   &.dark {
     --color-bg: #0f172a;
     --color-surface: #1e293b;
@@ -114,12 +65,6 @@ body {
     --color-border: #334155;
     --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.3);
     --active-bg: #2857a362;
-
-    // Цвета для валидации в темной теме
-    --color-error: #f87171;
-    --color-success: #4ade80;
-    --color-error-shadow: rgba(248, 113, 113, 0.25);
-    --color-success-shadow: rgba(74, 222, 128, 0.25);
   }
 
   background: var(--color-bg);

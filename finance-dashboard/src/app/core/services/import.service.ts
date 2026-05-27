@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ImportService {
-  private apiUrl = 'http://localhost:8080/api/import';
+  private apiUrl = 'http://100.92.130.10/api/import';
   
   constructor(private http: HttpClient) {}
   uploadCsv(file: File) :Observable<any> {

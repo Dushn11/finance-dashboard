@@ -1,16 +1,27 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ImportService } from '../../core/services/import.service.js';
 
 @Component({
   selector: 'app-import',
-  imports: [],
+  imports: [CommonModule, ReactiveFormsModule],
   standalone: true,
   templateUrl: './import.html',
   styleUrl: './import.scss',
 })
 export class Import {
+  private fb = new FormBuilder();
   selectedFile: File | null = null;
-  constructor(private importService: ImportService) {}
+  importForm: FormGroup;
+
+  constructor(private importService: ImportService) {
+    this.importForm = this.fb.group({
+      tabName: [''],
+      hasHeader: [true],
+      columnSeparator: [',', Validators.required],
+    });
+  }
 
   onFileSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
