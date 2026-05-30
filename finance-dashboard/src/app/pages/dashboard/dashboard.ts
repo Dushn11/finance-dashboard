@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Routes } from '@angular/router';
+import { DashboardComponent } from './dashboard.component';
 
-@Component({
-  selector: 'app-dashboard',
-  imports: [],
-  standalone: true,
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss',
-})
-export class Dashboard {}
+export default [
+  {
+    path: '',
+    component: DashboardComponent
+  }
+] satisfies Routes;

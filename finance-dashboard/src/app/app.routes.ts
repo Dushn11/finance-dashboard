@@ -8,19 +8,11 @@ export const routes: Routes = [
       component: LayoutComponent,
       canActivate: [AuthGuard],
       children: [
-        { path: '', redirectTo: 'dashboard',
-  pathMatch: 'full' },
-        { path: 'login', loadComponent: () =>
-  import('./pages/login/login').then(m => m.Login) },
-        { path: 'dashboard', loadComponent: () =>
-  import('./pages/dashboard/dashboard').then(m =>
-  m.Dashboard) },
-        { path: 'settings', loadComponent: () =>
-  import('./pages/settings/settings').then(m =>
-  m.Settings) },
-        { path: 'import', loadComponent: () =>
-  import('./pages/import/import').then(m =>
-  m.Import) },
+        { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        { path: 'login', loadComponent: () => import('./pages/login/login').then(m => m.Login) },
+        { path: 'dashboard', loadChildren: () => import('./pages/dashboard/dashboard').then(m => m.default) },
+        { path: 'settings', loadComponent: () => import('./pages/settings/settings').then(m => m.Settings) },
+        { path: 'import', loadComponent: () => import('./pages/import/import').then(m => m.Import) },
       ]
     }
   ];
