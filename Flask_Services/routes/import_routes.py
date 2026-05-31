@@ -31,7 +31,7 @@ def import_csv():
     )
 
     normalized = normalize_data(rows, mapping)
-
+    print("Success")
     return jsonify({
     "tabId": tab_id,
     "tabName": tab_name,

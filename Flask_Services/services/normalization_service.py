@@ -12,7 +12,6 @@ def parse_amount(value):
 
 def normalize_data(rows, mapping):
     normalized = []
-
     if not rows:
         return normalized
 
@@ -64,5 +63,7 @@ def normalize_data(rows, mapping):
 
         except Exception as e:
             print("Normalization error:", e)
+            print("Mapping: ",mapping)
+            print("Row: ",r)
 
     return normalized

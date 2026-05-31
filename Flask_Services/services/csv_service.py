@@ -9,7 +9,6 @@ def parse_csv(file, separator=",", skip_rows=0):
         stream = io.TextIOWrapper(file.stream, encoding="utf-8")
         reader = csv.reader(stream, delimiter=separator)
         rows = list(reader)
-
         return rows[skip_rows:]
 
     except Exception as e:
