@@ -7,10 +7,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ImportService {
-  private apiUrl = 'http://100.92.130.10/api/import';
-  
+  private apiUrl = 'http://100.92.130.10/api';
+
   constructor(private http: HttpClient) {}
-  uploadCsv(content: FormData) :Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/csv`, content);
+
+  uploadCsv(content: FormData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/import/csv`, content);
+  }
+
+  getTabs(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/dashboard/tabs`);
   }
 }

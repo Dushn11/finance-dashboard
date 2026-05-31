@@ -1,0 +1,108 @@
+<div class="wb-overlay" (click)="closed.emit()">
+  <div class="wb-modal" (click)="$event.stopPropagation()">
+    <div class="wb-header">
+      <h2>Add Widget</h2>
+      <button class="wb-close" (click)="closed.emit()">×</button>
+    </div>
+
+    <div class="wb-type-tabs">
+      <button [class.active]="selectedType === 'summary'" (click)="selectedType = 'summary'">Summary</button>
+      <button [class.active]="selectedType === 'chart'" (click)="selectedType = 'chart'">Chart</button>
+    </div>
+
+    @if(selectedType === 'summary' || selectedType === 'chart') {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="wb-form wb-form--compact">
+
+        <div class="wb-field">
+          <label>Metric</label>
+          <div class="wb-radio-group">
+            <label class="wb-radio" [class.active]="form.value.metric === 'expenses'">
+              <input type="radio" formControlName="metric" value="expenses">
+              <span>💸 Expenses</span>
+            </label>
+            <label class="wb-radio" [class.active]="form.value.metric === 'income'">
+              <input type="radio" formControlName="metric" value="income">
+              <span>💰 Income</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="wb-field">
+          <label>Category</label>
+          <select formControlName="category" class="wb-select">
+            <option value="any">Any category</option>
+            @for(cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </div>
+
+        @if(selectedType === 'chart') {
+          <div class="wb-field">
+            <label>Chart Type</label>
+            <div class="wb-radio-group">
+              <label class="wb-radio" [class.active]="form.value.chartType === 'line'">
+                <input type="radio" formControlName="chartType" value="line">
+                <span>Line</span>
+              </label>
+              <label class="wb-radio" [class.active]="form.value.chartType === 'bar'">
+                <input type="radio" formControlName="chartType" value="bar">
+                <span>Bar</span>
+              </label>
+            </div>
+          </div>
+        }
+
+        <div class="wb-field">
+          <label>Date Range</label>
+          <div class="wb-date-inputs">
+            <button type="button" class="wb-date-btn" [class.active]="calendarMode === 'from'"
+              (click)="calendarMode = calendarMode === 'from' ? null : 'from'">
+              {{ formatDate(dateFrom) }}
+            </button>
+            <span class="wb-date-arrow">→</span>
+            <button type="button" class="wb-date-btn" [class.active]="calendarMode === 'to'"
+              (click)="calendarMode = calendarMode === 'to' ? null : 'to'">
+              {{ formatDate(dateTo) }}
+            </button>
+          </div>
+
+          @if(calendarMode) {
+            <div class="wb-calendar">
+              <div class="wb-cal-nav">
+                <button type="button" (click)="prevMonth()">‹</button>
+                <span>{{ currentMonth | date:'MMMM yyyy' }}</span>
+                <button type="button" (click)="nextMonth()">›</button>
+              </div>
+              <div class="wb-cal-grid">
+                @for(day of ['Mo','Tu','We','Th','Fr','Sa','Su']; track day) {
+                  <div class="wb-cal-dow">{{ day }}</div>
+                }
+                @for(day of calendarDays; track $index) {
+                  @if(day) {
+                    <div class="wb-cal-day"
+                      [class.from]="isFrom(day)"
+                      [class.to]="isTo(day)"
+                      [class.in-range]="isInRange(day)"
+                      [class.disabled]="isDisabled(day)"
+                      (mouseenter)="hoverDate = day"
+                      (mouseleave)="hoverDate = null"
+                      (click)="!isDisabled(day) && selectDate(day)">
+                      {{ day.getDate() }}
+                    </div>
+                  } @else {
+                    <div></div>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <button type="submit" class="wb-submit" [disabled]="!dateFrom || !dateTo">
+          Add Widget
+        </button>
+      </form>
+    }
+  </div>
+</div>

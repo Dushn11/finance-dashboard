@@ -95,37 +95,38 @@ export class Import {
     };
 
     this.dashboardService.addTab(tabName, mockData);
-    this.router.navigate(['/dashboard']);
+
 
     // Закомментировано: реальный запрос на сервер
     /*
     const formData = new FormData();
-    formData.append('file', this.selectedFile);
+  formData.append('file', this.selectedFile);
+  formData.append('tabName', tabName);
+  formData.append('tabId', tabId);
 
-    // Собираем маппинг: индекс колонки -> тип поля
-    const mapping: { [key: string]: string } = {};
-    this.columnMappingArray.controls.forEach((control, index) => {
-      const value = control.value;
-      if (value && value !== 'ignore') {
-        mapping[index.toString()] = value;
-      }
-    });
+  const mapping: { [key: string]: string } = {};
+  this.columnMappingArray.controls.forEach((control, index) => {
+    const value = control.value;
+    if (value && value !== 'ignore') {
+      mapping[index.toString()] = value;
+    }
+  });
 
-    formData.append('columnMapping', JSON.stringify(mapping));
-    formData.append('separator', this.importForm.get('columnSeparator')?.value);
-    formData.append('skipRows', this.importForm.get('skipRows')?.value);
+  formData.append('columnMapping', JSON.stringify(mapping));
+  formData.append('separator', this.importForm.get('columnSeparator')?.value);
+  formData.append('skipRows', this.importForm.get('skipRows')?.value);
 
-    this.importService.uploadCsv(formData).subscribe({
-      next: (response) => {
-        const tabName = this.importForm.get('tabName')?.value || `Import ${new Date().toLocaleDateString()}`;
-        this.dashboardService.addTab(tabName, response.data);
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        console.error('Error uploading file', error);
-      }
-    });
+  this.importService.uploadCsv(formData).subscribe({
+    next: (response) => {
+      this.dashboardService.addTab(tabName, response);
+      this.router.navigate(['/dashboard']);
+    },
+    error: (error) => {
+      console.error('Error uploading file', error);
+    }
+  });
     */
+    this.router.navigate(['/dashboard']);// only for mock, delete when real import is implemented
   }
   parsePreview(): void {
     if (!this.selectedFile) {
