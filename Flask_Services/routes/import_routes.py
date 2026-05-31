@@ -1,7 +1,7 @@
-from flask import Blueprint,request,jsonify
+from flask import Blueprint, request, jsonify
+import json
 from services.csv_service import parse_csv
 from services.normalization_service import normalize_data
-from clients.spring_client import send_to_spring
 
 import_bp = Blueprint("import",__name__)
 
@@ -12,13 +12,32 @@ def import_csv():
     if not file:
         return jsonify({"error": "Brak pliku"}), 400
 
-    transactions = parse_csv(file)
-    normalized = normalize_data(transactions)
+    mapping_raw = request.form.get("columnMapping", "{}")
+    separator = request.form.get("separator", ",")
+    skip_rows = int(request.form.get("skipRows", 0))
+    tab_id = request.form.get("tab_Id")
+    tab_name = request.form.get("tab_Name")
+
+
+    try:
+        mapping = json.loads(mapping_raw)
+    except Exception:
+        return jsonify({"error": "Nieprawidłowy columnMapping"}), 400
+
+    rows = parse_csv(
+        file,
+        separator=separator,
+        skip_rows=skip_rows
+    )
+
+    normalized = normalize_data(rows, mapping)
 
     return jsonify({
-        "transactions": normalized,
-        "count": len(normalized)
-    }), 200
+    "tabId": tab_id,
+    "tabName": tab_name,
+    "transactions": normalized,
+    "count": len(normalized)
+})
 
 @import_bp.route("/health",methods=["GET"])
 def health():

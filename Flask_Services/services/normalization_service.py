@@ -10,44 +10,57 @@ def parse_amount(value):
     )
 
 
-def normalize_data(rows):
+def normalize_data(rows, mapping):
     normalized = []
 
     if not rows:
         return normalized
 
-    is_standard_format = isinstance(rows[0], dict)
-
     for r in rows:
         try:
+            transaction = {
+                "amount": 0.0,
+                "description": "",
+                "type": "INCOME"
+            }
 
-            if is_standard_format:
+            income = 0.0
+            expense = 0.0
 
-                normalized.append({
-                    "amount": float(r.get("Amount", 0.0)),
-                    "description": r.get("Description", ""),
-                    "type": r.get("type", "INCOME")
-                })
+            for column_index, field_name in mapping.items():
+                idx = int(column_index)
 
-            else:
+                if idx >= len(r):
+                    continue
 
-                description = r[3].strip()
+                value = r[idx].strip()
 
-                expense = parse_amount(r[10])
-                income = parse_amount(r[11])
+                if field_name == "description":
+                    transaction["description"] = value
 
-                if income > 0:
-                    amount = income
-                    tx_type = "INCOME"
-                else:
-                    amount = -expense
-                    tx_type = "EXPENSE"
+                elif field_name == "income":
+                    income = parse_amount(value)
 
-                normalized.append({
-                    "amount": amount,
-                    "description": description,
-                    "type": tx_type
-                })
+                elif field_name == "expense":
+                    expense = parse_amount(value)
+
+                elif field_name == "amount":
+                    transaction["amount"] = parse_amount(value)
+
+                elif field_name == "type":
+                    transaction["type"] = value.upper()
+
+                elif field_name == "date":
+                    transaction["date"] = value
+
+            if income > 0:
+                transaction["amount"] = income
+                transaction["type"] = "INCOME"
+            elif expense > 0:
+                transaction["amount"] = -expense
+                transaction["type"] = "EXPENSE"
+
+            normalized.append(transaction)
 
         except Exception as e:
             print("Normalization error:", e)
