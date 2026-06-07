@@ -23,6 +23,14 @@
     border-radius: 8px;
     background: var(--color-primary);
   }
+  &-switchTheme {
+      margin-left: auto;
+      cursor: pointer;
+      &:hover {
+        color: var(--color-primary);
+        transition: color 0.15s ease;
+      }
+  }
 }
 
 .nav-login {
@@ -49,6 +57,7 @@
     transition: all 0.15s ease;
 
     &:hover {
+      cursor: pointer;
       background: var(--color-bg);
       color: var(--color-text);
     }

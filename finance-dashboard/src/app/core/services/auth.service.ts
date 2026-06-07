@@ -34,7 +34,7 @@ export class AuthService {
     }
   }
   login(email: string, password: string) {
-    return this.http.post<AuthResponse>('http://100.92.130.10/api/auth/login', { email, password }).pipe(
+    return this.http.post<AuthResponse>('/api/auth/login', { email, password }).pipe(
       tap((response: AuthResponse) => {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('token', response.token)
@@ -46,7 +46,7 @@ export class AuthService {
     );
   }
   register(email: string, password: string, username: string) {
-    return this.http.post<AuthResponse>('http://100.92.130.10/api/auth/register', { username, password, email }).pipe(
+    return this.http.post<AuthResponse>('/api/auth/register', { username, password, email }).pipe(
       tap((response: AuthResponse) => {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('token', response.token)
@@ -79,13 +79,13 @@ export class AuthService {
 
   checkUsernameAvailability(username: string) {
     return this.http.get<{ available: boolean }>(
-      `http://100.92.130.10/api/auth/search?username=${username}`
+      `/api/auth/search?username=${username}`
     );
   }
 
   checkEmailAvailability(email: string) {
     return this.http.get<{ available: boolean }>(
-      `http://100.92.130.10/api/auth/search?email=${email}`
+      `/api/auth/search?email=${email}`
     );
   }
 }

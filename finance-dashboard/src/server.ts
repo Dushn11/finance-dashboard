@@ -6,10 +6,15 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import cors from 'cors';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
+app.use(cors({
+  origin: 'https://pi4.taile01e8d.ts.net',
+  credentials: true
+}));
 const angularApp = new AngularNodeAppEngine();
 
 /**

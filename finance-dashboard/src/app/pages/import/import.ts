@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../core/services/dashboard.service.js';
@@ -19,6 +19,7 @@ interface CsvPreview {
 })
 
 export class Import {
+  tabId: string | null = null;
   private fb = new FormBuilder();
   selectedFile: File | null = null;
   importForm: FormGroup;
@@ -43,7 +44,12 @@ export class Import {
       .map((_, i) => i)
       .filter(i => this.columnMappingArray.at(i)?.value !== 'ignore');
   }
-  constructor(private importService: ImportService, private dashboardService: DashboardService, private router: Router) {
+  constructor(
+    private importService: ImportService,
+    private dashboardService: DashboardService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
     this.importForm = this.fb.group({
       tabName: [''],
       hasHeader: [true],
@@ -98,13 +104,14 @@ export class Import {
 
 
     // Закомментировано: реальный запрос на сервер
-    /*
     const formData = new FormData();
-  formData.append('file', this.selectedFile);
-  formData.append('tabName', tabName);
-  formData.append('tabId', tabId);
+    const file = this.selectedFile!;
+    formData.append('file', file);
+    formData.append('tabName', tabName);
+    formData.append('tabId', this.tabId ?? new Date().toISOString());
 
-  const mapping: { [key: string]: string } = {};
+    const mapping: { [key: string]: string } = {};
+
   this.columnMappingArray.controls.forEach((control, index) => {
     const value = control.value;
     if (value && value !== 'ignore') {
@@ -113,8 +120,8 @@ export class Import {
   });
 
   formData.append('columnMapping', JSON.stringify(mapping));
-  formData.append('separator', this.importForm.get('columnSeparator')?.value);
-  formData.append('skipRows', this.importForm.get('skipRows')?.value);
+  formData.append('separator', String(this.importForm.get('columnSeparator')?.value ?? ','));
+  formData.append('skipRows', String(this.importForm.get('skipRows')?.value ?? '0'));
 
   this.importService.uploadCsv(formData).subscribe({
     next: (response) => {
@@ -125,8 +132,6 @@ export class Import {
       console.error('Error uploading file', error);
     }
   });
-    */
-    this.router.navigate(['/dashboard']);// only for mock, delete when real import is implemented
   }
   parsePreview(): void {
     if (!this.selectedFile) {
@@ -177,6 +182,8 @@ export class Import {
           this.columnMappingArray.push(this.fb.control(isEmpty ? 'ignore' : ''));
         }
       });
+
+      this.cdr.detectChanges();
     };
     reader.readAsText(this.selectedFile);
   }
