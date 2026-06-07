@@ -1,0 +1,16 @@
+@use '../../../styles' as *;
+
+.layout {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  height: 100vh;
+  background: var(--color-bg);
+  overflow-y: auto;
+}

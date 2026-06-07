@@ -1,0 +1,201 @@
+<div class="login-wrapper">
+  @if (showLogin) {
+    <div class="login-card">
+      <h2 class="login-title">Login</h2>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <div class="form-group">
+          <label for="loginEmail">E-Mail</label>
+          <input
+            type="email"
+            id="loginEmail"
+            formControlName="email"
+            placeholder="Enter your e-mail..."
+            [class.invalid]="loginEmailControl?.invalid && loginEmailControl?.touched">
+
+          <!-- Ошибки email под полем -->
+          @if (loginEmailControl?.invalid && loginEmailControl?.touched) {
+            <div class="field-error">
+              @if (loginEmailControl?.hasError('required')) {
+                <span>Email is required</span>
+              }
+              @if (loginEmailControl?.hasError('email')) {
+                <span>Invalid email format</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input
+            type="password"
+            id="loginPassword"
+            formControlName="password"
+            placeholder="Enter your password..."
+            [class.invalid]="loginPasswordControl?.invalid && loginPasswordControl?.touched">
+
+          <!-- Ошибки password под полем -->
+          @if (loginPasswordControl?.invalid && loginPasswordControl?.touched) {
+            <div class="field-error">
+              @if (loginPasswordControl?.hasError('required')) {
+                <span>Password is required</span>
+              }
+              @if (loginPasswordControl?.hasError('minlength')) {
+                <span>Password must be at least 6 characters</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Общая ошибка формы (от сервера) -->
+        @if (errorMessage) {
+          <div class="error-message">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button class="btn-login" type="submit" [disabled]="loginForm.invalid">Login</button>
+      </form>
+    </div>
+  }
+
+  @if (!showLogin) {
+    <div class="login-card">
+      <h2 class="login-title">Register</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <div class="form-group">
+          <label for="registerUsername">Username</label>
+          <input
+            type="text"
+            id="registerUsername"
+            formControlName="username"
+            placeholder="Enter your username..."
+            [class.invalid]="usernameControl?.invalid && usernameControl?.touched"
+            [class.valid]="usernameControl?.valid && usernameControl?.touched">
+
+          <!-- Статус проверки username -->
+          @if (usernameControl?.pending) {
+            <div class="checking-status">⏳ Checking availability...</div>
+          }
+
+          <!-- Ошибки username под полем -->
+          @if (usernameControl?.invalid && usernameControl?.touched) {
+            <div class="field-error">
+              @if (usernameControl?.hasError('required')) {
+                <span>Username is required</span>
+              }
+              @if (usernameControl?.hasError('minlength')) {
+                <span>Username must be at least 3 characters</span>
+              }
+              @if (usernameControl?.hasError('usernameTaken')) {
+                <span>❌ This username is already taken</span>
+              }
+            </div>
+          }
+
+          <!-- Успешная валидация -->
+          @if (usernameControl?.valid && usernameControl?.touched) {
+            <div class="success-message">✅ Username is available</div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="registerEmail">E-Mail</label>
+          <input
+            type="email"
+            id="registerEmail"
+            formControlName="email"
+            placeholder="Enter your e-mail..."
+            [class.invalid]="emailControl?.invalid && emailControl?.touched"
+            [class.valid]="emailControl?.valid && emailControl?.touched">
+
+          <!-- Статус проверки email -->
+          @if (emailControl?.pending) {
+            <div class="checking-status">⏳ Checking availability...</div>
+          }
+
+          <!-- Ошибки email под полем -->
+          @if (emailControl?.invalid && emailControl?.touched) {
+            <div class="field-error">
+              @if (emailControl?.hasError('required')) {
+                <span>Email is required</span>
+              }
+              @if (emailControl?.hasError('email')) {
+                <span>Invalid email format</span>
+              }
+              @if (emailControl?.hasError('emailTaken')) {
+                <span>❌ This email is already registered</span>
+              }
+            </div>
+          }
+
+          <!-- Успешная валидация -->
+          @if (emailControl?.valid && emailControl?.touched) {
+            <div class="success-message">✅ Email is available</div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="registerPassword">Password</label>
+          <input
+            type="password"
+            id="registerPassword"
+            formControlName="password"
+            placeholder="Enter your password..."
+            [class.invalid]="passwordControl?.invalid && passwordControl?.touched">
+
+          <!-- Ошибки password под полем -->
+          @if (passwordControl?.invalid && passwordControl?.touched) {
+            <div class="field-error">
+              @if (passwordControl?.hasError('required')) {
+                <span>Password is required</span>
+              }
+              @if (passwordControl?.hasError('minlength')) {
+                <span>Password must be at least 6 characters</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            placeholder="Confirm your password..."
+            [class.invalid]="confirmPasswordControl?.invalid && confirmPasswordControl?.touched">
+
+          <!-- Ошибки confirmPassword под полем -->
+          @if (confirmPasswordControl?.invalid && confirmPasswordControl?.touched) {
+            <div class="field-error">
+              @if (confirmPasswordControl?.hasError('required')) {
+                <span>Please confirm your password</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Общая ошибка формы (от сервера или несовпадение паролей) -->
+        @if (errorMessage) {
+          <div class="error-message">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button
+          class="btn-login"
+          type="submit"
+          [disabled]="registerForm.invalid || registerForm.pending">
+          @if (registerForm.pending) {
+            <span>Checking...</span>
+          } @else {
+            <span>Register</span>
+          }
+        </button>
+      </form>
+    </div>
+  }
+
+  <button class="btn-switch" (click)="switch()">{{ showLogin ? 'Sign Up' : 'Sign In' }}</button>
+</div>

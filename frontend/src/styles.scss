@@ -1,0 +1,166 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
+// ── Радиусы (остаются $) ─────────────────
+$radius-card: 16px;
+$radius-btn: 8px;
+
+// ── Миксины ─────────────────────────────
+@mixin card {
+  background: var(--color-surface);
+  border-radius: $radius-card;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  padding: 20px;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-row($gap: 12px) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+}
+
+@mixin btn-secondary {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: $radius-btn;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--color-primary);
+    color: white;
+  }
+}
+
+// ── Миксины для валидации форм ───────────
+@mixin validation-message {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+
+  span {
+    display: block;
+    margin-top: 0.25rem;
+  }
+}
+
+@mixin field-error {
+  @include validation-message;
+  color: var(--color-error);
+}
+
+@mixin field-success {
+  @include validation-message;
+  color: var(--color-success);
+}
+
+@mixin field-checking {
+  @include validation-message;
+  color: var(--color-text-muted);
+}
+
+@mixin input-invalid {
+  border-color: var(--color-error) !important;
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem var(--color-error-shadow);
+  }
+}
+
+@mixin input-valid {
+  border-color: var(--color-success) !important;
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem var(--color-success-shadow);
+  }
+}
+
+// ── Глобальные базовые стили ─────────────
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  --color-bg: #eef4fb;
+  --color-surface: #ffffff;
+  --color-primary: #2563eb;
+  --color-text: #1a2540;
+  --color-text-muted: #64748b;
+  --color-border: #d4e2f0;
+  --shadow-card: 0 2px 12px rgba(37, 99, 235, 0.06);
+  --active-bg: #dbeafe;
+
+  // Цвета для валидации
+  --color-error: #dc3545;
+  --color-success: #28a745;
+  --color-error-shadow: rgba(220, 53, 69, 0.25);
+  --color-success-shadow: rgba(40, 167, 69, 0.25);
+
+  &.dark {
+    --color-bg: #0f172a;
+    --color-surface: #1e293b;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-border: #334155;
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.3);
+    --active-bg: #2857a362;
+
+    // Цвета для валидации в темной теме
+    --color-error: #f87171;
+    --color-success: #4ade80;
+    --color-error-shadow: rgba(248, 113, 113, 0.25);
+    --color-success-shadow: rgba(74, 222, 128, 0.25);
+  }
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+}
