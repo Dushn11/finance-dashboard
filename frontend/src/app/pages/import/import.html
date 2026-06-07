@@ -1,0 +1,77 @@
+<div class="wrapper">
+    <h1>Import Data</h1>
+    <div class="fileSelect">
+        <p>Select a file to upload:</p>
+        <input type="file" accept=".txt, .csv" (change)="onFileSelect($event)" />
+    </div>
+    <div *ngIf="selectedFile" class="importSettings">
+        <form [formGroup]="importForm"> 
+            <div>
+                <p>Enter new tab name (optional):</p>
+                <input type="text" formControlName="tabName" placeholder="Tab name" />
+            </div>
+            <div>
+                <input type="checkbox" id="hasHeader" formControlName="hasHeader" />
+                <label for="hasHeader">First row contains headers</label>
+            </div>
+            <div>
+                <p>Select column separator:</p>
+                <select formControlName="columnSeparator">
+                    <option value=",">,</option>
+                    <option value=";">;</option>
+                    <option value="\t">\t</option>
+                </select>
+            </div>
+            <div>
+                <p>Number of rows to skip:</p>
+                <input type="number" formControlName="skipRows" min="0" />
+            </div>
+            <div class="column-mapping" *ngIf="csvPreview">
+                <h3>Column Mapping:</h3>
+                <div class="mapping-container">
+                    <div class="mapping-row" *ngFor="let header of csvPreview.headers; let i = index">
+                        <span class="column-name">
+                            <ng-container *ngIf="importForm.get('hasHeader')?.value">
+                                Column {{ i+1 }}: {{ header }}
+                            </ng-container>
+                            <ng-container *ngIf="!importForm.get('hasHeader')?.value">
+                                {{ header }}
+                            </ng-container>
+                        </span>
+                        <select [formControl]="$any(columnMappingArray.at(i))">
+                            <option value="ignore">Ignore</option>
+                            <option value="date">Date</option>
+                            <option value="description">Description</option>
+                            <option value="amount">Amount</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                            <option value="type">Type</option>
+                            <option value="category">Category</option>
+                            <option value="recipient">Recipient</option>
+                            <option value="sender">Sender</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="csvPreview" class="preview">
+                <p>Import Preview:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th *ngFor="let i of getVisibleColumns()">
+                                {{!!!columnMappingArray.at(i).value? csvPreview.headers[i] : ''}}
+                                <span class="badge">{{ columnMappingArray.at(i).value }}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of csvPreview.rows">
+                            <td *ngFor="let i of getVisibleColumns()">{{ row[i] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <button (click)="onImport()">Upload</button>
+    </div>
+</div>

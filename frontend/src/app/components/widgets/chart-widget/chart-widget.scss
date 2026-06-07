@@ -1,0 +1,41 @@
+@import '../../../../styles.scss';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chart-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden; /* Защита от случайных вылетов */
+
+  .chart-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    padding: 0 4px;
+    flex: 0 0 auto; /* Запрещаем заголовку сжиматься или растягиваться */
+  }
+
+  .chart-canvas {
+    flex: 1 1 0%;
+    position: relative; /* Критически важно: становится точкой отсчета для абсолютного canvas */
+    width: 100%;
+    height: 100%;
+    min-height: 0;      /* Принудительно разрешаем Flex-элементу сжиматься до нуля */
+    padding: 4px;
+
+    canvas {
+      position: absolute; /* Убираем влияние canvas на высоту flex-контейнера */
+      top: 4px;          /* Учитываем ваш padding */
+      left: 4px;
+      width: calc(100% - 8px) !important;  /* Растягиваем с учетом padding (4px + 4px) */
+      height: calc(100% - 8px) !important; /* Растягиваем с учетом padding (4px + 4px) */
+      display: block;
+    }
+  }
+}

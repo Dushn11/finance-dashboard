@@ -1,0 +1,77 @@
+<div class="dashboard-container">
+    @if(dashboardService.tabs.length === 0) {
+        <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <h2>No dashboards yet</h2>
+            <p>Import a file to create your first dashboard</p>
+            <a routerLink="/import" class="btn-import">+ Import File</a>
+        </div>
+    } @else if(!dashboardService.activeTabId) {
+        <div class="tabs-overview">
+            <h2>Your Dashboards</h2>
+            <div class="tabs-grid">
+                @for(tab of dashboardService.tabs; track tab.id) {
+                    <div class="tab-card" (click)="dashboardService.setActiveTab(tab.id)">
+                        <div class="tab-card-icon">📊</div>
+                        <div class="tab-card-name">{{ tab.name }}</div>
+                        <div class="tab-card-widgets">{{ tab.widgets.length }} widgets</div>
+                    </div>
+                }
+            </div>
+        </div>
+    } @else {
+        <div class="tab-content">
+            <div class="toolbar">
+                <button class="btn-back" (click)="dashboardService.activeTabId = null">← Back</button>
+                <h3>{{ dashboardService.activeTab!.name }}</h3>
+                <button (click)="openWidgetBuilder()">+ Add Widget</button>
+            </div>
+
+            <ng-container *ngIf="isBrowser">
+                <gridster [options]="dashboardService.activeTab!.gridsterConfig">
+                    <gridster-item *ngFor="let widget of dashboardService.activeTab!.widgets" [item]="widget" (itemChange)="onItemChange($event, widget)" (itemResize)="onItemResize($event, widget)">
+                        @if(widget.type === 'summary') {
+                            <div class="widget-container">
+                                <div class="widget-header">
+                                    <span>Summary</span>
+                                    <button (click)="removeWidget(dashboardService.activeTab!.id, widget.id)">×</button>
+                                </div>
+                                <div class="widget-content">
+                                    <div class="summary-value">{{ getSummaryValue(widget) | number:'1.0-0' }}</div>
+                                    <div class="summary-meta">{{ widget.config?.metric }} — {{ widget.config?.category || 'any' }}</div>
+                                </div>
+                            </div>
+                        } @else if(widget.type === 'chart') {
+                            <div class="widget-container">
+                                <div class="widget-header">
+                                    <span>Chart</span>
+                                    <button (click)="removeWidget(dashboardService.activeTab!.id, widget.id)">×</button>
+                                </div>
+                                <div class="widget-content">
+                                    <app-chart-widget [config]="widget.config"></app-chart-widget>
+                                </div>
+                            </div>
+                        }
+                         @else {
+                             <div class="widget-container">
+                                 <div class="widget-header">
+                                     <span>{{ widget.type }}</span>
+                                     <button (click)="removeWidget(dashboardService.activeTab!.id, widget.id)">×</button>
+                                 </div>
+                                 <div class="widget-content">Other widget content here</div>
+                             </div>
+                         }
+                    </gridster-item>
+                </gridster>
+            </ng-container>
+        </div>
+    }
+</div>
+
+@if(showWidgetBuilder && dashboardService.activeTab) {
+    <app-widget-builder
+        [transactions]="dashboardService.activeTab!.transactions"
+        (widgetCreated)="onWidgetCreated($event)"
+        (closed)="showWidgetBuilder = false">
+    </app-widget-builder>
+}

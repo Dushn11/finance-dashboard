@@ -1,0 +1,61 @@
+<aside class="sidebar">
+    <div class="logo">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined">
+            <path d="M12 16v5" />
+            <path d="M16 14v7" />
+            <path d="M20 10v11" />
+            <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15" />
+            <path d="M4 18v3" />
+            <path d="M8 14v7" />
+        </svg>
+        <span>FinTrack</span>
+        <div (click)="switchTheme()" class="logo-switchTheme">
+            @if (!isDark) {
+                <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon-icon lucide-moon"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+            }
+            @else {
+                <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-icon lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            }
+        </div>
+    </div>
+    <nav class="nav">
+        <a class="nav-item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+        @if(dashboardService.tabs.length > 0) {
+        <div class="dashboard-tabs">
+            @for(tab of dashboardService.tabs; track tab.id) {
+            <a class="nav-item nav-sub-item" routerLink="/dashboard">
+                <span class="nav-icon">📋</span>
+                <span>{{ tab.name }}</span>
+            </a>
+            }
+        </div>
+        }
+        <a class="nav-item" routerLink="/import" routerLinkActive="active">
+            <span class="nav-icon">📥</span>
+            <span>Import</span>
+        </a>
+
+    </nav>
+    <div class="sidebar-footer">
+        @if(!authService.currentUser()) {
+        <a class="nav-item" routerLink="/login" routerLinkActive="active">
+            <span class="nav-icon">🚪</span>
+            <span>Login</span>
+        </a>
+        }
+        @else {
+        <div class="user-info">
+            <span class="user-name">{{ authService.currentUser()?.username }}</span>
+        </div>
+        <a class="nav-item" (click)="authService.logout()">
+            <span class="nav-icon">🚪</span>
+            <span>Logout</span>
+        </a>
+        }
+    </div>
+</aside>

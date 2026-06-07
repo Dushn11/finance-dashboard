@@ -1,0 +1,171 @@
+@import '../../../styles.scss';
+
+.wb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 40, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.wb-modal {
+  width: 620px;
+  max-width: calc(100% - 32px);
+  @include card;
+  padding: 18px;
+}
+
+.wb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  h2 { font-size: 18px; }
+
+  .wb-close {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+
+.wb-type-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+
+  button {
+    @include btn-secondary;
+    padding: 8px 14px;
+
+    &.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+  }
+}
+
+.wb-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .wb-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label { font-weight: 600; color: var(--color-text); }
+
+    .wb-select { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--color-border); }
+
+    .wb-radio-group { display: flex; gap: 8px; }
+
+    .wb-radio {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+
+      input { display: none; }
+
+      &.active { background: var(--active-bg); border-color: var(--color-primary); }
+    }
+  }
+
+  .wb-date-inputs { display: flex; align-items: center; gap: 8px; }
+  .wb-date-btn { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--color-border); background: transparent; cursor: pointer; }
+
+  .wb-calendar {
+    margin-top: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 12px;
+    background: var(--color-surface);
+  }
+
+  .wb-cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 8px;
+
+    span { font-weight: 600; font-size: 14px; }
+
+    button {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--color-border);
+      }
+    }
+  }
+
+  .wb-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .wb-cal-dow {
+    text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    padding: 6px 4px;
+  }
+
+  .wb-cal-day {
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    user-select: none;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+
+    &:not(.disabled) {
+      &:hover {
+        background: var(--color-border);
+        border-color: var(--color-primary);
+      }
+    }
+
+    &.from, &.to {
+      background: var(--color-primary);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    &.in-range {
+      background: var(--active-bg);
+      color: var(--color-primary);
+    }
+
+    &.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .wb-submit {
+    margin-top: 6px;
+    padding: 10px 16px;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+}
