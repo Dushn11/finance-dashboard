@@ -1,0 +1,11 @@
+<div class="summary-widget">
+  <div class="summary-label">
+    {{ config?.metric === 'income' ? 'Total Income' : 'Total Expenses' }}
+    <span *ngIf="config?.category && config?.category !== 'any'"> ({{ config.category }})</span>
+  </div>
+  <div class="summary-value">{{ total | number:'1.2-2' }} PLN</div>
+  <div class="summary-count">{{ count }} transaction{{ count !== 1 ? 's' : '' }}</div>
+  <div class="summary-period" *ngIf="config?.dateFrom && config?.dateTo">
+    {{ config.dateFrom }} — {{ config.dateTo }}
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="dashboard-container">
+    <div class="tab-content">
+        @if (activeTab) {
+
+        <div class="toolbar">
+            <button class="btn-back" routerLink="/dashboard">← Back</button>
+            <h3>{{ activeTab.title }}</h3>
+            <button (click)="showWidgetBuilder = true">+ Add Widget</button>
+        </div>
+
+        @if (!activeTab.data.widgets || activeTab.data.widgets.length === 0 || showWidgetBuilder) {
+
+        <app-widget-builder [transactions]="transactions" (widgetCreated)="onWidgetCreated($event)"
+            (closed)="onBuilderClosed()">
+        </app-widget-builder>
+
+        } @else {
+
+        <ng-container *ngIf="isBrowser">
+            <gridster [options]="gridsterConfig">
+
+                <gridster-item *ngFor="let widget of activeTab.data.widgets" [item]="{
+                               x: widget.gridPosition?.x ?? 0,
+                               y: widget.gridPosition?.y ?? 0,
+                               cols: widget.gridPosition?.cols ?? widget.gridPosition?.w ?? 4,
+                               rows: widget.gridPosition?.rows ?? widget.gridPosition?.h ?? 3
+                           }" (itemChange)="onItemChange($event, widget)" (itemResize)="onItemResize($event, widget)">
+
+                    @if(widget.type === 'summary') {
+                    <div class="widget-container">
+                        <div class="widget-header">
+                            <span>Summary</span>
+                            <button (click)="removeWidget(activeTab.id, widget.id)">×</button>
+                        </div>
+                        <div class="widget-content">
+                            <app-summary-widget [config]="widget.config || widget.settings" [transactions]="transactions"></app-summary-widget>
+                        </div>
+                    </div>
+                    } @else if(widget.type === 'chart') {
+                    <div class="widget-container">
+                        <div class="widget-header">
+                            <span>Chart</span>
+                            <button (click)="removeWidget(activeTab.id, widget.id)">×</button>
+                        </div>
+                        <div class="widget-content">
+                            <app-chart-widget [config]="widget.config || widget.settings" [transactions]="transactions"></app-chart-widget>
+                        </div>
+                    </div>
+                    } @else {
+                    <div class="widget-container">
+                        <div class="widget-header">
+                            <span>{{ widget.type }}</span>
+                            <button (click)="removeWidget(activeTab.id, widget.id)">×</button>
+                        </div>
+                        <div class="widget-content">Other widget content here</div>
+                    </div>
+                    }
+
+                </gridster-item>
+            </gridster>
+        </ng-container>
+        }
+        }
+    </div>
+</div>

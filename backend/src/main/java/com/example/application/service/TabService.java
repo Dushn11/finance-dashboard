@@ -1,18 +1,27 @@
 package com.example.application.service;
 
-import com.example.application.dto.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.application.dto.FlaskParseResponse;
+import com.example.application.dto.SaveTabRequest;
+import com.example.application.dto.TabResponse;
+import com.example.application.dto.WidgetDTO;
 import com.example.application.model.DataSource;
 import com.example.application.model.UserTab;
 import com.example.application.model.Widget;
 import com.example.application.repository.DataSourceRepository;
 import com.example.application.repository.UserTabRepository;
 import com.example.application.repository.WidgetRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TabService {
@@ -75,34 +84,110 @@ public class TabService {
     }
 
     @Transactional
-    public TabResponse importFile(MultipartFile file, Long userId) {
-        FlaskParseResponse flaskResponse = flaskIntegrationService.parseFile(file);
+    public TabResponse importFile(MultipartFile file, Long userId, String customTitle,
+                                  String separator, Integer skipRows, String mappingJson) {
 
+        // 1. Получаем ответ от Flask - просто список транзакций
+        FlaskParseResponse flaskResponse = flaskIntegrationService.parseFile(file, separator, skipRows, mappingJson);
+
+        // 2. Создаем и сохраняем вкладку пользователя
         UserTab tab = new UserTab();
         tab.setUserId(userId);
-        tab.setTitle(flaskResponse.getTitle());
-        tab = userTabRepository.save(tab);
+        tab.setTitle(customTitle);
+        if (tab.getWidgets() == null) {
+            tab.setWidgets(new ArrayList<>());
+        }
+        final UserTab savedTab = userTabRepository.save(tab);
 
-        for (FlaskParseResponse.FlaskWidgetData widgetData : flaskResponse.getWidgets()) {
-            DataSource dataSource = new DataSource();
-            dataSource.setName(widgetData.getTitle());
-            dataSource.setPayload(widgetData.getPayload());
-            dataSource = dataSourceRepository.save(dataSource);
+        List<Map<String, Object>> allTransactions = flaskResponse.getTransactions();
 
-            Widget widget = new Widget();
-            widget.setTab(tab);
-            widget.setDataSource(dataSource);
-            widget.setType(widgetData.getType());
-            widget.setTitle(widgetData.getTitle());
-            widget.setGridPosition(widgetData.getGridPosition());
-            widget.setSettings(widgetData.getSettings() != null ? widgetData.getSettings() : new HashMap<>());
-
-            tab.getWidgets().add(widget);
+        if (allTransactions == null || allTransactions.isEmpty()) {
+            System.out.println("No transactions from Flask");
+            return getTabById(savedTab.getId());
         }
 
-        userTabRepository.save(tab);
+        System.out.println("=== DEBUG: Transactions from Flask ===");
+        System.out.println("Total transactions: " + allTransactions.size());
 
-        return getTabById(tab.getId());
+        // 3. Группируем транзакции по типу
+        List<Map<String, Object>> incomeTransactions = new ArrayList<>();
+        List<Map<String, Object>> expenseTransactions = new ArrayList<>();
+
+        for (Map<String, Object> transaction : allTransactions) {
+            String type = (String) transaction.get("type");
+            if ("INCOME".equalsIgnoreCase(type)) {
+                incomeTransactions.add(transaction);
+            } else if ("EXPENSE".equalsIgnoreCase(type)) {
+                expenseTransactions.add(transaction);
+            }
+        }
+
+        System.out.println("Income transactions: " + incomeTransactions.size());
+        System.out.println("Expense transactions: " + expenseTransactions.size());
+
+        // 4. Создаем DataSource и Widget для каждой группы
+        int yPosition = 0;
+
+        if (!incomeTransactions.isEmpty()) {
+            DataSource incomeDS = new DataSource();
+            incomeDS.setName("Income Data");
+            Map<String, Object> incomePayload = new HashMap<>();
+            incomePayload.put("transactions", incomeTransactions);
+            incomeDS.setPayload(incomePayload);
+            incomeDS = dataSourceRepository.save(incomeDS);
+
+            Widget incomeWidget = new Widget();
+            incomeWidget.setTab(savedTab);
+            incomeWidget.setDataSource(incomeDS);
+            incomeWidget.setType("chart");  // Тип виджета, не транзакции
+            incomeWidget.setTitle("Income Data");
+
+            Map<String, Object> gridPos = new HashMap<>();
+            gridPos.put("x", 0);
+            gridPos.put("y", yPosition);
+            gridPos.put("w", 6);
+            gridPos.put("h", 4);
+            gridPos.put("cols", 12);
+            gridPos.put("rows", 12);
+            incomeWidget.setGridPosition(gridPos);
+            incomeWidget.setSettings(new HashMap<>());
+
+            widgetRepository.save(incomeWidget);
+            savedTab.getWidgets().add(incomeWidget);
+            yPosition += 4;
+        }
+
+        if (!expenseTransactions.isEmpty()) {
+            DataSource expenseDS = new DataSource();
+            expenseDS.setName("Expense Data");
+            Map<String, Object> expensePayload = new HashMap<>();
+            expensePayload.put("transactions", expenseTransactions);
+            expenseDS.setPayload(expensePayload);
+            expenseDS = dataSourceRepository.save(expenseDS);
+
+            Widget expenseWidget = new Widget();
+            expenseWidget.setTab(savedTab);
+            expenseWidget.setDataSource(expenseDS);
+            expenseWidget.setType("chart");  // Тип виджета, не транзакции
+            expenseWidget.setTitle("Expense Data");
+
+            Map<String, Object> gridPos = new HashMap<>();
+            gridPos.put("x", 6);
+            gridPos.put("y", 0);
+            gridPos.put("w", 6);
+            gridPos.put("h", 4);
+            gridPos.put("cols", 12);
+            gridPos.put("rows", 12);
+            expenseWidget.setGridPosition(gridPos);
+            expenseWidget.setSettings(new HashMap<>());
+
+            widgetRepository.save(expenseWidget);
+            savedTab.getWidgets().add(expenseWidget);
+        }
+
+        System.out.println("Created " + savedTab.getWidgets().size() + " widgets");
+
+        return getTabById(savedTab.getId());
     }
 
     @Transactional(readOnly = true)
@@ -110,6 +195,47 @@ public class TabService {
         UserTab tab = userTabRepository.findByIdWithWidgetsAndDataSources(id)
                 .orElseThrow(() -> new RuntimeException("Tab not found: " + id));
 
+        return convertToResponse(tab);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getTabTransactions(Long tabId) {
+        System.out.println("=== getTabTransactions called for tabId: " + tabId + " ===");
+
+        UserTab tab = userTabRepository.findByIdWithWidgetsAndDataSources(tabId)
+                .orElseThrow(() -> new RuntimeException("Tab not found: " + tabId));
+
+        List<Map<String, Object>> allTransactions = new ArrayList<>();
+
+        // Собираем транзакции из всех DataSource виджетов этой вкладки
+        for (Widget widget : tab.getWidgets()) {
+            if (widget.getDataSource() != null) {
+                Map<String, Object> payload = widget.getDataSource().getPayload();
+                if (payload != null && payload.containsKey("transactions")) {
+                    Object transactionsObj = payload.get("transactions");
+                    if (transactionsObj instanceof List) {
+                        @SuppressWarnings("unchecked")
+                        List<Map<String, Object>> transactions = (List<Map<String, Object>>) transactionsObj;
+                        allTransactions.addAll(transactions);
+                        System.out.println("Added " + transactions.size() + " transactions from widget " + widget.getId());
+                    }
+                }
+            }
+        }
+
+        System.out.println("Total transactions collected: " + allTransactions.size());
+        return allTransactions;
+    }
+
+    @Transactional(readOnly = true)
+    public List<TabResponse> getTabsByUserId(Long userId) {
+        List<UserTab> tabs = userTabRepository.findByUserId(userId);
+        return tabs.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    private TabResponse convertToResponse(UserTab tab) {
         TabResponse response = new TabResponse();
         response.setTabId(tab.getId());
         response.setTitle(tab.getTitle());

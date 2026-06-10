@@ -2,9 +2,8 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../core/services/dashboard.service.js';
-import { TransactionService } from '../../core/services/transaction.service.js';
 import { ChartService } from '../../core/services/chart.service.js';
-import { TabService } from '../../core/services/tab.service.js';
+import { AuthService } from '../../core/services/auth.service.js';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ImportService } from '../../core/services/import.service.js';
 import * as Papa from 'papaparse';
@@ -50,9 +49,8 @@ export class Import {
   constructor(
     private importService: ImportService,
     private dashboardService: DashboardService,
-    private transactionService: TransactionService,
     private chartService: ChartService,
-    private tabService: TabService,
+    private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
@@ -92,59 +90,50 @@ export class Import {
       return;
     }
 
-    // Временно: создаем тестовую вкладку с липовыми данными
-    const tabName = this.importForm.get('tabName')?.value || `Import ${new Date().toLocaleDateString()}`;
-/*
-    const mockData = {
-      transactions: [
-        { date: '2025-11-21', description: 'LIDL KOSCIUSZKI', amount: -10.89, type: 'expense', category: 'Groceries' },
-        { date: '2025-11-24', description: 'ZABKA Z2613', amount: -4.50, type: 'expense', category: 'Groceries' },
-        { date: '2025-11-26', description: 'Transfer from son', amount: 100.00, type: 'income', category: 'Transfer' },
-        { date: '2025-11-29', description: 'T-MOBILE POLSKA', amount: -35.00, type: 'expense', category: 'Bills' },
-        { date: '2025-11-29', description: 'PANDORA Bonarka', amount: -139.30, type: 'expense', category: 'Shopping' },
-        { date: '2025-12-02', description: 'BLIK Payment', amount: -5.00, type: 'expense', category: 'Other' },
-      ]
-    };
+    const currentUser = this.authService.currentUser();
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
 
-    this.dashboardService.addTab(tabName, mockData);*/
+    const tabName = this.importForm.get('tabName')?.value?.trim() || `Import ${new Date().toLocaleDateString()}`;
+    const userId = currentUser.id; // ID текущего авторизованного пользователя
 
+    // Получаем настройки парсинга из формы
+    const separator = this.importForm.get('columnSeparator')?.value ?? ',';
+    const skipRows = this.importForm.get('skipRows')?.value ?? 0;
 
-    // Закомментировано: реальный запрос на сервер
-    const formData = new FormData();
-    const file = this.selectedFile!;
-    formData.append('file', file);
-    formData.append('tabName', tabName);
-    formData.append('tabId', this.tabId ?? new Date().toISOString());
-
+    // Собираем маппинг колонок { "0": "date", "1": "amount" }
     const mapping: { [key: string]: string } = {};
+    this.columnMappingArray.controls.forEach((control, index) => {
+      const value = control.value;
+      if (value && value !== 'ignore') {
+        mapping[index.toString()] = value;
+      }
+    });
 
-  this.columnMappingArray.controls.forEach((control, index) => {
-    const value = control.value;
-    if (value && value !== 'ignore') {
-      mapping[index.toString()] = value;
-    }
-  });
+    console.log('Отправка данных на импорт:', { tabName, userId, separator, skipRows, mapping });
 
-  formData.append('columnMapping', JSON.stringify(mapping));
-  formData.append('separator', String(this.importForm.get('columnSeparator')?.value ?? ','));
-  formData.append('skipRows', String(this.importForm.get('skipRows')?.value ?? '0'));
-
-  this.importService.uploadCsv(formData).subscribe({
-    next: (response) => {
-      const tabId = response.tabId ?? response.id;
-      const newTab = this.dashboardService.addTab(tabName, response, tabId);
-
-      this.tabService.setActiveTab(newTab.id);
-      const importedTransactions = response.transactions ?? [];
-      this.transactionService.updateTransactions(importedTransactions);
-      this.chartService.refreshCharts();
-
-      this.router.navigate(['/dashboard']);
-    },
-    error: (error) => {
-      console.error('Error uploading file', error);
-    }
-  });
+    // Передаем всё в сервис
+    this.importService.importFile(
+      this.selectedFile,
+      userId,
+      tabName,
+      separator,
+      skipRows,
+      JSON.stringify(mapping) // Передаем маппинг как JSON-строку
+    ).subscribe({
+      next: (response) => {
+        console.log('Импорт успешен. ID вкладки:', response.tabId);
+        const newTab = this.dashboardService.addTab(tabName, response, response.tabId);
+        this.chartService.refreshCharts();
+        this.dashboardService.setActiveTab(response.tabId);
+        this.router.navigate(['/dashboard/tab', response.tabId]);
+      },
+      error: (error) => {
+        console.error('Ошибка при импорте файла:', error);
+      }
+    });
   }
   parsePreview(): void {
     if (!this.selectedFile) {

@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { DashboardService } from './dashboard.service';
 
 export interface User {
   id: number;
@@ -33,6 +34,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private dashboardService: DashboardService
   ) {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('token');
@@ -86,14 +88,19 @@ export class AuthService {
     );
   }
 
-  /** Выход: очищает токен и данные пользователя. */
+  /** Выход: очищает токен, данные пользователя и состояние dashboard. */
   logout() {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      // Полностью очищаем localStorage
+      localStorage.clear();
+
       this.currentUserSubject.next(null);
       this.currentUser.set(null);
     }
+
+    // Сбрасываем состояние DashboardService
+    this.dashboardService.clearState();
+
     this.loadingSubject.next(false);
     this.router.navigate(['/login']);
   }

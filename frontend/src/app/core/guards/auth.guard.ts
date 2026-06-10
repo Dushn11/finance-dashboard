@@ -12,4 +12,5 @@ export const AuthGuard: CanActivateFn = ()=>{
     router.navigate(['/login']);
     return false;
   }
+  //return true; // Заглушка для разработки, пока не реализован полноценный механизм аутентификации
 }

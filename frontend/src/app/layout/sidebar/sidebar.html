@@ -13,10 +13,27 @@
         <span>FinTrack</span>
         <div (click)="switchTheme()" class="logo-switchTheme">
             @if (!isDark) {
-                <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon-icon lucide-moon"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+            <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-moon-icon lucide-moon">
+                <path
+                    d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+            </svg>
             }
             @else {
-                <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-icon lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-sun-icon lucide-sun">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="m4.93 4.93 1.41 1.41" />
+                <path d="m17.66 17.66 1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="m6.34 17.66-1.41 1.41" />
+                <path d="m19.07 4.93-1.41 1.41" />
+            </svg>
             }
         </div>
     </div>
@@ -25,15 +42,20 @@
             <span class="nav-icon">📊</span>
             <span>Dashboard</span>
         </a>
-        @if(dashboardService.tabs.length > 0) {
-        <div class="dashboard-tabs">
-            @for(tab of dashboardService.tabs; track tab.id) {
-            <a class="nav-item nav-sub-item" routerLink="/dashboard">
-                <span class="nav-icon">📋</span>
-                <span>{{ tab.name }}</span>
-            </a>
-            }
-        </div>
+        @if (dashboardService.tabs$ | async; as tabs) {
+
+        @if (tabs.length > 0) {
+
+        @for (tab of tabs; track tab.id) {
+        <a class="nav-item nav-sub-item" [routerLink]="['/dashboard/tab', tab.id]"
+            [class.active]="(dashboardService.activeTabId$ | async) === tab.id">
+            <span class="nav-icon">📋</span>
+            <span>{{ tab.title }}</span>
+        </a>
+        }
+
+        }
+
         }
         <a class="nav-item" routerLink="/import" routerLinkActive="active">
             <span class="nav-icon">📥</span>

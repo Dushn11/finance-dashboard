@@ -1,0 +1,22 @@
+<div class="dashboard-container">
+  <div class="tabs-overview">
+    <h2>Your Dashboards</h2>
+
+    <div class="tabs-grid">
+      @for(tab of (dashboardService.tabs$ | async); track tab.id) {
+      <div class="tab-card" [routerLink]="['/dashboard/tab', tab.id]">
+        <div class="tab-card-icon">📊</div>
+        <div class="tab-card-name">{{ tab.title }}</div>
+        <div class="tab-card-widgets">{{ tab.data.widgets?.length || 0 }} widgets</div>
+      </div>
+      } @empty {
+      <div class="empty-state">
+        <div class="empty-icon">📁</div>
+        <h2>No dashboards yet</h2>
+        <p>Import your first file to create a dashboard and start tracking your finances</p>
+        <a routerLink="/import" class="btn-import">+ Import First File</a>
+      </div>
+      }
+    </div>
+  </div>
+</div>

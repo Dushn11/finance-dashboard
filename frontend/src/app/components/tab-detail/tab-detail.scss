@@ -1,0 +1,161 @@
+@use '../../../styles.scss' as *;
+
+// ── Dashboard Container ───────────────────────────────────────
+.dashboard-container {
+  height: 100%;
+  min-height: calc(100vh - 60px);
+  padding: 32px;
+  background: var(--color-bg);
+}
+
+// ── Tab Content Container ─────────────────────────────────────
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+// ── Toolbar (кнопки и заголовок) ───────────────────────────────
+.toolbar {
+  @include flex-row(16px);
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.3px;
+    flex: 1;
+  }
+
+  .btn-back {
+    padding: 8px 16px;
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: $radius-btn;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+
+    &:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+  }
+
+  button:not(.btn-back) {
+    padding: 9px 20px;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: $radius-btn;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+
+    &:hover {
+      opacity: 0.88;
+    }
+  }
+}
+
+// ── Gridster wrapper ──────────────────────────────────────────
+gridster {
+  background: var(--color-bg) !important;
+  border-radius: $radius-card;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  flex: 1;
+  min-height: 720px;
+  width: 100%;
+}
+
+gridster-item {
+background: transparent !important;
+border: none !important;
+  display: flex;
+  overflow: hidden;
+}
+
+
+// ── Widget Container ──────────────────────────────────────────
+.widget-container {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+// ── Widget Header ──────────────────────────────────────────────
+.widget-header {
+  @include flex-row;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--color-text-muted);
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+    }
+  }
+}
+
+// ── Widget Content ────────────────────────────────────────────
+.widget-content {
+  flex: 1 1 auto;
+  padding: 16px 12px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+
+  p {
+    margin: 4px 0;
+    line-height: 1.6;
+
+    strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+  }
+}
+
+.summary-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.summary-meta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 0 12px;
+}

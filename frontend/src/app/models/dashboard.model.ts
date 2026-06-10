@@ -26,7 +26,7 @@ export interface SummaryWidgetConfig {
 }
 
 export interface WidgetItem {
-  id: string;
+  id: number; // Изменено с string на number для соответствия бэкенду (Long)
   type: WidgetType;
   x: number;
   y: number;

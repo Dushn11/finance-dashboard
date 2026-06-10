@@ -1,0 +1,37 @@
+.summary-widget {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 16px;
+  background: var(--color-surface);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.summary-count {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.summary-period {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-top: auto;
+}

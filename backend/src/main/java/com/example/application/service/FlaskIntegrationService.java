@@ -22,20 +22,29 @@ public class FlaskIntegrationService {
         this.restTemplate = new RestTemplate();
     }
 
-    public FlaskParseResponse parseFile(MultipartFile file) {
+    // Изменили сигнатуру: теперь метод принимает ВСЕ параметры для парсинга
+    public FlaskParseResponse parseFile(MultipartFile file, String separator, Integer skipRows, String mappingJson) {
         try {
-            String url = flaskServiceUrl + "/api/parse";
+            // ВАЖНО: Убедись, что эндпоинт во Flask совпадает (/api/parse или /api/parse-csv)
+            String url = flaskServiceUrl + "/import/csv"; 
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            
+            // 1. Добавляем сам файл
             body.add("file", new ByteArrayResource(file.getBytes()) {
                 @Override
                 public String getFilename() {
                     return file.getOriginalFilename();
                 }
             });
+
+            // 2. ДОБАВЛЯЕМ ОСТАЛЬНЫЕ ПАРАМЕТРЫ, чтобы Flask их прочитал!
+            body.add("separator", separator);
+            body.add("skipRows", skipRows.toString());
+            body.add("columnMapping", mappingJson);
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
