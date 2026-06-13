@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, HostListener } from '@angular/core'; // Добавили ViewChild и HostListener
+import { Component, Input, OnInit, ViewChild, HostListener} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -14,44 +14,68 @@ import { SummaryWidgetConfig } from '../../../models/dashboard.model.js';
 })
 export class ChartWidgetComponent implements OnInit {
   @Input() config: SummaryWidgetConfig | any;
-  @Input() transactions: any[] = []; // Транзакции передаются извне
+  private _transactions: any[] = [];
 
-  // Получаем доступ к инстансу ng2-charts
+  @Input() set transactions(value: any[]) {
+  console.log('setter called, length:', value?.length);
+  this._transactions = value;
+  if (value && value.length > 0) {
+    this.buildWhenReady();
+  }
+}
+
+  private buildWhenReady() {
+  if (this.chart) {
+    this.buildChart();
+    return;
+  }
+  let attempts = 0;
+  const interval = setInterval(() => {
+    attempts++;
+    console.log('waiting for chart, attempt:', attempts, 'chart:', this.chart);
+    if (this.chart) {
+      clearInterval(interval);
+      this.buildChart();
+    }
+    if (attempts > 20) {
+      clearInterval(interval);
+      console.warn('chart never initialized');
+    }
+  }, 50);
+}
+
+  get transactions(): any[] {
+    return this._transactions;
+  }
+
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   public chartType: ChartType = 'line';
   public chartData: ChartConfiguration['data'] = { datasets: [], labels: [] };
-  
+
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
-    maintainAspectRatio: false, // Это критически важно!
+    maintainAspectRatio: false,
     plugins: { legend: { display: true } },
     scales: {
       y: { beginAtZero: true }
     }
   } as any;
 
-  // Слушаем изменение размеров. Когда gridster меняет размер, 
-  // если у него включен resize Debounce/Event, или вызовется window.resize — график перерисуется.
   @HostListener('window:resize')
   onResize() {
     if (this.chart) {
-      this.chart.update(); // Принудительно заставляем Chart.js пересчитать высоту canvas
+      this.chart.update();
     }
   }
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(private dashboardService: DashboardService) { }
 
   ngOnInit() {
     this.chartType = (this.config?.chartType as ChartType) || 'line';
-    this.buildChart();
-    // Даём чарту время отрендериться с правильными размерами
-    setTimeout(() => {
-      if (this.chart) {
-        this.chart.update();
-      }
-    }, 100);
   }
+
+
 
   buildChart() {
     console.log('=== buildChart called ===');
@@ -78,7 +102,6 @@ export class ChartWidgetComponent implements OnInit {
 
     console.log('Date range:', { from, to });
 
-    // Если даты не заданы, определяем автоматически из транзакций
     let actualFrom = from;
     let actualTo = to;
 
@@ -108,7 +131,6 @@ export class ChartWidgetComponent implements OnInit {
 
     console.log('Generated days:', days.length);
 
-    // Фильтруем собранные из базы данных транзакции
     const filtered = allTransactions.filter((t: any) => {
       const d = this.parseTransactionDate(t.date);
       if (actualFrom && d < actualFrom) return false;
@@ -125,15 +147,11 @@ export class ChartWidgetComponent implements OnInit {
       const prev = map.get(key) ?? 0;
       const tType = t.type?.toUpperCase();
 
-      // Если metric не задан, показываем все транзакции (абсолютные значения)
       if (!this.config.metric) {
         map.set(key, prev + Math.abs(t.amount));
-      }
-      // Иначе фильтруем по типу
-      else if (this.config.metric === 'expenses' && tType === 'EXPENSE') {
+      } else if (this.config.metric === 'expenses' && tType === 'EXPENSE') {
         map.set(key, prev + Math.abs(t.amount));
-      }
-      else if (this.config.metric === 'income' && tType === 'INCOME') {
+      } else if (this.config.metric === 'income' && tType === 'INCOME') {
         map.set(key, prev + Math.abs(t.amount));
       }
     });
@@ -153,7 +171,6 @@ export class ChartWidgetComponent implements OnInit {
       ]
     };
 
-    // Обновляем холст графика
     setTimeout(() => this.chart?.update(), 0);
   }
 
@@ -163,14 +180,11 @@ export class ChartWidgetComponent implements OnInit {
     return isNaN(d.getTime()) ? null : d;
   }
 
-  // Парсит даты в формате DD-MM-YYYY (из CSV)
   parseTransactionDate(dateStr: string): Date {
     if (!dateStr) return new Date();
 
-    // Проверяем формат DD-MM-YYYY
     if (dateStr.includes('-')) {
       const parts = dateStr.split('-');
-      // Если первая часть <= 2 символа, это DD-MM-YYYY
       if (parts[0].length <= 2) {
         const day = parseInt(parts[0], 10);
         const month = parseInt(parts[1], 10);
@@ -178,7 +192,6 @@ export class ChartWidgetComponent implements OnInit {
         return new Date(year, month - 1, day);
       }
     }
-    // Иначе пробуем стандартный парсинг
     return new Date(dateStr);
   }
 }

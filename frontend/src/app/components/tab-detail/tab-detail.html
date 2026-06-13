@@ -19,12 +19,7 @@
         <ng-container *ngIf="isBrowser">
             <gridster [options]="gridsterConfig">
 
-                <gridster-item *ngFor="let widget of activeTab.data.widgets" [item]="{
-                               x: widget.gridPosition?.x ?? 0,
-                               y: widget.gridPosition?.y ?? 0,
-                               cols: widget.gridPosition?.cols ?? widget.gridPosition?.w ?? 4,
-                               rows: widget.gridPosition?.rows ?? widget.gridPosition?.h ?? 3
-                           }" (itemChange)="onItemChange($event, widget)" (itemResize)="onItemResize($event, widget)">
+                <gridster-item *ngFor="let widget of activeTab.data.widgets" [item]="widget.gridPosition">
 
                     @if(widget.type === 'summary') {
                     <div class="widget-container">

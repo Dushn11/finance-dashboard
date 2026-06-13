@@ -1,6 +1,6 @@
 <div class="chart-wrap">
   <div class="chart-title">{{ config?.metric | titlecase }} — {{ config?.category || 'Any' }}</div>
-  <div class="chart-canvas">
+  <div class="chart-canvas" #chartContainer>
     <canvas baseChart
       [data]="chartData"
       [options]="chartOptions"

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DashboardService, LocalTab, WidgetDTO } from '../../core/services/dashboard.service';
@@ -42,14 +42,29 @@ export class TabDetailComponent implements OnInit, OnDestroy {
     maxItemCols: 10,
     maxItemRows: 15,
     pushItems: true,
-    swap: false
+    swap: false,
+    itemChangeCallback: (item: GridsterItemConfig, itemComponent: GridsterItem) => {
+      console.log('itemChange fired:', item);
+      const widget = this.activeTab?.data.widgets.find(w => w.gridPosition === item);
+      console.log('found widget:', widget);
+      if (widget) {
+        this.saveSubject.next();
+      }
+    },
+    itemResizeCallback: (item: GridsterItemConfig, itemComponent: GridsterItem) => {
+      const widget = this.activeTab?.data.widgets.find(w => w.gridPosition === item);
+      if (widget) {
+        this.saveSubject.next();
+      }
+    }
   };
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     public dashboardService: DashboardService,
-    private importService: ImportService
+    private importService: ImportService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -75,33 +90,30 @@ export class TabDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadTabData() {
-    // Сначала пробуем загрузить из localStorage (кэш)
     const cachedTab = this.dashboardService.getTabById(this.tabId);
     if (cachedTab) {
       this.activeTab = cachedTab;
     }
 
-    // Загружаем транзакции
-    this.loadTransactions();
-
-    // Затем загружаем актуальные данные с бэкенда
     this.importService.getTabById(this.tabId).subscribe({
       next: (response) => {
-        // Обновляем activeTab актуальными данными
-        this.activeTab = {
-          id: this.tabId,
-          title: response.title,
-          data: response
-        };
+        response.widgets.forEach((w: any) => {
+          if (w.gridPosition) {
+            w.gridPosition.cols = w.gridPosition.cols ?? w.gridPosition.w ?? 4;
+            w.gridPosition.rows = w.gridPosition.rows ?? w.gridPosition.h ?? 3;
+            w.gridPosition.x = w.gridPosition.x ?? 0;
+            w.gridPosition.y = w.gridPosition.y ?? 0;
+          }
+        });
 
-        // Обновляем кэш в DashboardService
+        this.activeTab = { id: this.tabId, title: response.title, data: response };
         this.dashboardService.updateTabInStorage(this.activeTab);
         this.showWidgetBuilder = false;
+
+        setTimeout(() => this.loadTransactions(), 100);
       },
       error: (err) => {
         console.error('Failed to load tab data from backend:', err);
-
-        // Если данных нет на бэкенде и нет в кэше - редирект
         if (!cachedTab) {
           this.router.navigate(['/dashboard']);
         }
@@ -124,9 +136,9 @@ export class TabDetailComponent implements OnInit, OnDestroy {
     console.log('Fetching transactions from backend...');
     this.importService.getTabTransactions(this.tabId).subscribe({
       next: (transactions) => {
-        this.transactions = transactions;
+        this.transactions = [...transactions];
+        this.cdr.detectChanges(); // форсим передачу в дочерние компоненты
         console.log('Loaded transactions:', transactions.length);
-        console.log('Sample transaction:', transactions[0]);
       },
       error: (err) => {
         console.error('Error loading transactions:', err);
