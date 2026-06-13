@@ -29,11 +29,11 @@ export class TabService {
   constructor(private importService: ImportService) {}
 
   loadTabs() {
-    return this.importService.getTabs().pipe(
-      tap((tabs) => {
-        const normalizedTabs: DashboardTab[] = tabs.map((t) => ({
-          id: t.id,
-          name: t.name,
+    return this.importService.getUserTabs().pipe(
+      tap((tabs: any[]) => {
+        const normalizedTabs: DashboardTab[] = tabs.map((t: any) => ({
+          id: t.id ?? t.tabId,
+          name: t.name ?? t.title,
           gridsterConfig: this.getDefaultGridsterConfig(),
           widgets: t.widgets ?? [],
           transactions: t.transactions ?? []
