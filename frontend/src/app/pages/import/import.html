@@ -5,7 +5,7 @@
         <input type="file" accept=".txt, .csv" (change)="onFileSelect($event)" />
     </div>
     <div *ngIf="selectedFile" class="importSettings">
-        <form [formGroup]="importForm"> 
+        <form [formGroup]="importForm">
             <div>
                 <p>Enter new tab name (optional):</p>
                 <input type="text" formControlName="tabName" placeholder="Tab name" />
@@ -26,9 +26,16 @@
                 <p>Number of rows to skip:</p>
                 <input type="number" formControlName="skipRows" min="0" />
             </div>
+            <div class="presets">
+                <span>Bank preset:</span>
+                <button *ngFor="let preset of pressets" type="button" (click)="applyPreset(preset)">
+                    {{ preset.name }}
+                </button>
+            </div>
             <div class="column-mapping" *ngIf="csvPreview">
-                <h3>Column Mapping:</h3>
-                <div class="mapping-container">
+                <h3 (click)="showMapping = !showMapping" style="cursor: pointer;">Column Mapping {{ showMapping ? '▲' :
+                    '▼' }}</h3>
+                <div class="mapping-container" *ngIf="showMapping">
                     <div class="mapping-row" *ngFor="let header of csvPreview.headers; let i = index">
                         <span class="column-name">
                             <ng-container *ngIf="importForm.get('hasHeader')?.value">

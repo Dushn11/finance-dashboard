@@ -41,11 +41,8 @@ export class DashboardService  {
   private init(): void {
     try {
       this.loadFromStorage();
-      // ... дальше твой код парсинга ...
     } catch (e) {
       console.error('LocalStorage пуст или поврежден', e);
-      // Обязательно: очисти битый кэш, чтобы при следующем запуске 
-      // приложение не пыталось снова упасть на этой ошибке
       localStorage.removeItem('dashboard_tabs');
     }
   }

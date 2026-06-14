@@ -24,6 +24,7 @@ export class Import {
   tabId: string | null = null;
   private fb = new FormBuilder();
   selectedFile: File | null = null;
+  showMapping = false;
   importForm: FormGroup;
   public csvPreview: CsvPreview | null = null;
 
@@ -38,6 +39,10 @@ export class Import {
     { value: 'amount', label: 'Amount' },
     { value: 'type', label: 'Type' },
     { value: 'sender', label: 'Sender' }
+  ];
+
+  pressets = [
+    { name: 'Santander', hasHeader: false, skipRows: 2, mapping: { 1: 'date', 3: 'description', 8: 'type', 10: 'expense', 11: 'income' } }
   ];
 
   getVisibleColumns(): number[] {
@@ -134,6 +139,23 @@ export class Import {
         console.error('Ошибка при импорте файла:', error);
       }
     });
+  }
+  applyPreset(preset: any) {
+    this.importForm.patchValue({
+      columnSeparator: preset.separator ?? this.importForm.get('columnSeparator')?.value,
+      skipRows: preset.skipRows,
+      hasHeader: preset.hasHeader ?? this.importForm.get('hasHeader')?.value
+    });
+
+    if (this.selectedFile) {
+      setTimeout(() => {
+        this.columnMappingArray.controls.forEach((control, index) => {
+          const field = preset.mapping[index];
+          control.setValue(field ?? 'ignore');
+        });
+        this.cdr.detectChanges();
+      }, 200);
+    }
   }
   parsePreview(): void {
     if (!this.selectedFile) {
