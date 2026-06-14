@@ -79,7 +79,7 @@
   }
 
   .wb-date-inputs { display: flex; align-items: center; gap: 8px; }
-  .wb-date-btn { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--color-border); background: transparent; cursor: pointer; }
+  .wb-date-btn { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--color-border); background: transparent; cursor: pointer; color: var(--color-text); }
 
   .wb-calendar {
     margin-top: 8px;
@@ -104,7 +104,7 @@
       padding: 4px 8px;
       border-radius: 4px;
       cursor: pointer;
-
+      color: var(--color-text);
       &:hover {
         background: var(--color-border);
       }

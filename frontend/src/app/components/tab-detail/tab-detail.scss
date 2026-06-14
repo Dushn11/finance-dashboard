@@ -132,7 +132,8 @@ border: none !important;
   color: var(--color-text-muted);
   display: flex;
   flex-direction: column;
-  overflow: auto;
+
+  overflow: hidden;
 
   p {
     margin: 4px 0;
